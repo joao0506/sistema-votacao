@@ -1,12 +1,14 @@
 package br.com.votacao.sessaoms.services;
 
 import br.com.votacao.sessaoms.domain.Sessao;
-import br.com.votacao.sessaoms.domain.Voto;
 import br.com.votacao.sessaoms.domain.dto.SessaoDTO;
 import br.com.votacao.sessaoms.exceptions.ValidacoesVotoException;
+import br.com.votacao.sessaoms.kafka.ResultadoProducer;
 import br.com.votacao.sessaoms.repository.SessaoRepository;
 import br.com.votacao.sessaoms.repository.VotoRepository;
 import br.com.votacao.sessaoms.utils.UUIDGenerator;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +25,16 @@ public class SessaoService {
     @Autowired
     private VotoRepository votoRepository;
 
-    public Sessao salvarSessao(Sessao sessao){
+    @Autowired
+    private ResultadoProducer resultadoProducer;
+
+    public Sessao salvarSessao(Sessao sessao) {
         return sessaoRepository.save(sessao);
     }
 
-    public Sessao buscarSessaoPorId(String id) throws Exception {
+    public Sessao buscarSessaoPorId(String id) {
         Optional<Sessao> sessao = sessaoRepository.findById(id);
-        return sessao.orElseThrow(() -> new Exception("Sessão não encontrada!"));
+        return sessao.orElseThrow(() -> new ValidacoesVotoException("Sessão não encontrada!"));
     }
 
     public Sessao fromDTO(SessaoDTO sessaoDTO) {
@@ -55,16 +60,24 @@ public class SessaoService {
     }
 
     private void computarResultado(Sessao sessao) {
+        JSONObject resultado = new JSONObject();
+        resultado.put("idPauta", sessao.getIdPauta());
+
         Integer votosSim = votoRepository.findAllVotosBySessaoAndVoto(sessao, "1").size();
         Integer votosNao = votoRepository.findAllVotosBySessaoAndVoto(sessao, "0").size();
 
-        if (votosSim > votosNao)
-            System.out.println("Resultado da pauta"+sessao.getIdPauta()+" Sim");
-        else if (votosSim < votosNao)
-            System.out.println("Resultado da pauta"+sessao.getIdPauta()+" Não");
-        else
-            System.out.println("Sem resultado definido");
+        System.out.println("S: " + votosSim);
+        System.out.println("N: " + votosNao);
 
+        if (votosSim > votosNao)
+            resultado.put("resultado", "Sim");
+        else if (votosSim < votosNao)
+            resultado.put("resultado", "Não");
+        else
+            resultado.put("resultado", "Sem resultado definido");
+
+
+        resultadoProducer.enviarResultadoVotacao(resultado.toString());
     }
 
 }
