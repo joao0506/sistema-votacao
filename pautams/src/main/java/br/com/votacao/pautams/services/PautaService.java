@@ -28,19 +28,22 @@ public class PautaService {
 
     private RestTemplate restTemplate = new RestTemplate();
 
-
     public Pauta salvarPauta(Pauta pauta){
         return pautaRepository.save(pauta);
     }
 
     public Pauta fromDTO(PautaDTO pautaDTO) {
         String idPauta = UUIDGenerator.generateUUID();
-        return new Pauta(idPauta, pautaDTO.getDescricao().trim());
+        return new Pauta(idPauta, pautaDTO.getDescricao().trim(), null);
     }
 
     public Page<Pauta> listarTodasAsPautas(String pagina, String linhasPorPagina) {
         Pageable pageRequest = PageRequest.of(Integer.valueOf(pagina), Integer.valueOf(linhasPorPagina));
         return pautaRepository.findAll(pageRequest);
+    }
+
+    public Pauta listarPautaPorId(String id){
+        return pautaRepository.findById(id).get();
     }
 
     public ResponseEntity criarSessao(String pauta, Integer duracaoSessao){

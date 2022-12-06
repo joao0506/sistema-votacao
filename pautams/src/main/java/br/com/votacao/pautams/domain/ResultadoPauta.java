@@ -1,25 +1,25 @@
 package br.com.votacao.pautams.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 @Entity
-@Table(name = "pauta")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class Pauta {
+@NoArgsConstructor
+public class ResultadoPauta {
 
     @Id
     private String id;
 
-    private String descricao;
-
     @OneToOne
-    private ResultadoPauta resultado;
+    @JsonIgnore
+    private Pauta pauta;
+
+    private String resultado;
 }
