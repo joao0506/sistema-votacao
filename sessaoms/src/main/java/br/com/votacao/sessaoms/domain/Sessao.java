@@ -21,4 +21,6 @@ public class Sessao {
     private LocalDateTime dataFechamentoSessao;
     @Column(unique = true)
     private String idPauta;
+
+    private Boolean isSessaoEncerrada;
 }

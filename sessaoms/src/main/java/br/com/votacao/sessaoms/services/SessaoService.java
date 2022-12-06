@@ -21,6 +21,6 @@ public class SessaoService {
     public Sessao fromDTO(SessaoDTO sessaoDTO) {
         LocalDateTime dataAtual = LocalDateTime.now();
         LocalDateTime dataEncerramentoDaSessao = dataAtual.plusMinutes(sessaoDTO.getDuracaoSessao());
-        return new Sessao(UUIDGenerator.generateUUID(), dataAtual, dataEncerramentoDaSessao, sessaoDTO.getIdPauta());
+        return new Sessao(UUIDGenerator.generateUUID(), dataAtual.minusSeconds(dataAtual.getSecond()), dataEncerramentoDaSessao.minusSeconds(dataEncerramentoDaSessao.getSecond()), sessaoDTO.getIdPauta(), false);
     }
 }
