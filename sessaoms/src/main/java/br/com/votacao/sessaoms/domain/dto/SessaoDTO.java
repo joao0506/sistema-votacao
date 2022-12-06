@@ -1,4 +1,4 @@
-package br.com.votacao.sessaoms.domain;
+package br.com.votacao.sessaoms.domain.dto;
 
 import lombok.Getter;
 import lombok.Setter;

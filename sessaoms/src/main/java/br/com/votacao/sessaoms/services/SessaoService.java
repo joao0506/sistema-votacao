@@ -1,7 +1,7 @@
 package br.com.votacao.sessaoms.services;
 
 import br.com.votacao.sessaoms.domain.Sessao;
-import br.com.votacao.sessaoms.domain.SessaoDTO;
+import br.com.votacao.sessaoms.domain.dto.SessaoDTO;
 import br.com.votacao.sessaoms.repository.SessaoRepository;
 import br.com.votacao.sessaoms.utils.UUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;

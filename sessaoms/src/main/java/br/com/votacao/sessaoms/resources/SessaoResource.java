@@ -1,10 +1,9 @@
 package br.com.votacao.sessaoms.resources;
 
 import br.com.votacao.sessaoms.domain.Sessao;
-import br.com.votacao.sessaoms.domain.SessaoDTO;
+import br.com.votacao.sessaoms.domain.dto.SessaoDTO;
 import br.com.votacao.sessaoms.services.SessaoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
