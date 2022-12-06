@@ -5,6 +5,7 @@ import br.com.votacao.pautams.domain.dto.PautaDTO;
 import br.com.votacao.pautams.services.PautaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,8 +29,15 @@ public class PautaResource {
         return ResponseEntity.created(uri).build();
     }
 
+    @PostMapping(value = "/abrir-sessao")
+    public ResponseEntity<?> inserirSessaoDaPauta(@RequestParam(value = "pauta") String pauta,
+                                                  @Param(value = "duracaoSessao") Integer duracaoSessao){
+        pautaService.criarSessao(pauta, duracaoSessao);
+        return null;
+    }
+
     @GetMapping
-    public ResponseEntity<Page<Pauta>> listarTodasAsPautasPorOrdemAlfabetica(@RequestParam(value = "pagina", defaultValue = "0") String pagina,
+    public ResponseEntity<Page<Pauta>> listarTodasAsPautas(@RequestParam(value = "pagina", defaultValue = "0") String pagina,
                                                            @RequestParam(value = "linhasPorPagina", defaultValue = "5") String linhasPorPagina){
         Page<Pauta> pautas = pautaService.listarTodasAsPautas(pagina, linhasPorPagina);
         return ResponseEntity.ok(pautas);
