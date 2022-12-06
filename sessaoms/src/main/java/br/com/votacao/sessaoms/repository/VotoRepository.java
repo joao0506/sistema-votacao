@@ -4,11 +4,17 @@ import br.com.votacao.sessaoms.domain.Associado;
 import br.com.votacao.sessaoms.domain.Sessao;
 import br.com.votacao.sessaoms.domain.Voto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface VotoRepository extends JpaRepository<Voto, String> {
     Optional<Voto> findBySessaoAndAssociado(Sessao sessao, Associado associado);
+
+
+    List<Voto> findAllVotosBySessaoAndVoto(Sessao sessao, String voto);
+
 }
