@@ -2,11 +2,9 @@ package br.com.votacao.sessaoms.domain;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "sessao")
@@ -23,4 +21,7 @@ public class Sessao {
     private String idPauta;
 
     private Boolean isSessaoEncerrada;
+
+    @OneToMany(mappedBy = "sessao")
+    private List<Voto> votos;
 }

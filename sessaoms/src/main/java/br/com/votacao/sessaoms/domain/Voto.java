@@ -2,24 +2,26 @@ package br.com.votacao.sessaoms.domain;
 
 import lombok.*;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
-public class Associado {
+public class Voto {
+
     @Id
     private String id;
 
-    @Column(unique = true)
-    private String cpf;
+    @ManyToOne
+    private Sessao sessao;
 
-    @OneToMany(mappedBy = "associado")
-    private List<Voto> votos;
+    @ManyToOne
+    private Associado associado;
+
+    private String voto;
 }
