@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class SessaoService {
@@ -17,6 +18,11 @@ public class SessaoService {
 
     public Sessao salvarSessao(Sessao sessao){
         return sessaoRepository.save(sessao);
+    }
+
+    public Sessao buscarSessaoPorId(String id) throws Exception {
+        Optional<Sessao> sessao = sessaoRepository.findById(id);
+        return sessao.orElseThrow(() -> new Exception("Sessão não encontrada!"));
     }
 
     public Sessao fromDTO(SessaoDTO sessaoDTO) {

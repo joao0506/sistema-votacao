@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @Service
 public class AssociadoService {
@@ -16,6 +17,11 @@ public class AssociadoService {
 
     public Associado salvarAssociado(Associado associado){
         return associadoRepository.save(associado);
+    }
+
+    public Associado buscarAssociadoPorCPF(String cpf){
+        Optional<Associado> associado = associadoRepository.findBycpf(cpf);
+        return associado.orElse(null);
     }
 
     public Associado fromDTO(String cpf){
