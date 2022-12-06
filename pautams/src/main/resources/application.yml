@@ -12,3 +12,8 @@ spring:
     hibernate:
       ddl-auto: update
       show-sql: true
+
+
+api:
+  sessao:
+    criar-sessao: "http://localhost:8081/sessao-ms/sessao/criar-sessao"

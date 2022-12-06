@@ -1,18 +1,19 @@
 package br.com.votacao.pautams.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class ValidationFieldException {
+public class ExceptionHandlerMap {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
@@ -25,6 +26,20 @@ public class ValidationFieldException {
             errors.put(fieldName, errorMessage);
         });
         return errors;
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity<String> HttpClientErrorExceptionHandler(HttpClientErrorException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> HttpClientErrorExceptionHandler(Exception e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("Erro ao processar solicitação. Tente novamente!");
     }
 
 }

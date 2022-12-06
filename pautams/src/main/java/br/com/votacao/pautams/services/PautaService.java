@@ -6,12 +6,14 @@ import br.com.votacao.pautams.repositories.PautaRepository;
 import br.com.votacao.pautams.utils.UUIDGenerator;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,7 +23,11 @@ public class PautaService {
     @Autowired
     private PautaRepository pautaRepository;
 
-    String urlSessaoMS = "http://localhost:8081/sessao-ms";
+    @Value("${api.sessao.criar-sessao}")
+    private String URL_CRIAR_SESSAO;
+
+    private RestTemplate restTemplate = new RestTemplate();
+
 
     public Pauta salvarPauta(Pauta pauta){
         return pautaRepository.save(pauta);
@@ -37,21 +43,21 @@ public class PautaService {
         return pautaRepository.findAll(pageRequest);
     }
 
-
-    public void criarSessao(String pauta, Integer duracaoSessao){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
+    public ResponseEntity criarSessao(String pauta, Integer duracaoSessao){
         JSONObject json = criarJsonObjectSessao(pauta, duracaoSessao);
-        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity<String> entity = new HttpEntity<String>(json.toString(), criarHeadersRequisicao());
 
-        HttpEntity<String> entity = new HttpEntity<String>(json.toString(), headers);
-
-
-        String result = restTemplate.postForObject(urlSessaoMS+"/sessao/criarSessao", entity, String.class);
-        System.out.println(result);
+        ResponseEntity response = restTemplate.postForObject(URL_CRIAR_SESSAO, entity, ResponseEntity.class);
+        return response;
     }
 
-    public JSONObject criarJsonObjectSessao(String pauta, Integer duracaoSessao) {
+    private HttpHeaders criarHeadersRequisicao(){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
+    }
+
+    private JSONObject criarJsonObjectSessao(String pauta, Integer duracaoSessao) {
         JSONObject json = new JSONObject();
         json.put("idPauta", pauta);
         json.put("duracaoSessao", duracaoSessao);

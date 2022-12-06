@@ -4,6 +4,7 @@ import br.com.votacao.sessaoms.domain.Sessao;
 import br.com.votacao.sessaoms.domain.SessaoDTO;
 import br.com.votacao.sessaoms.services.SessaoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +21,8 @@ public class SessaoResource {
     @Autowired
     private SessaoService sessaoService;
 
-    @PostMapping("/criarSessao")
-    public ResponseEntity<?> criarSessao(@RequestBody SessaoDTO sessaoDTO){
+    @PostMapping("/criar-sessao")
+    public ResponseEntity<?> criarSessao(@RequestBody SessaoDTO sessaoDTO) {
         Sessao sessao = sessaoService.fromDTO(sessaoDTO);
         sessaoService.salvarSessao(sessao);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
