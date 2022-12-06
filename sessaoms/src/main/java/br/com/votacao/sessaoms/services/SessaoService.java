@@ -54,30 +54,35 @@ public class SessaoService {
 
     public void encerrarSessoes(List<Sessao> sessoes) {
         sessoes.forEach(sessao -> {
-
             computarResultado(sessao);
+            sessao.setIsSessaoEncerrada(true);
+            sessaoRepository.save(sessao);
         });
     }
 
     private void computarResultado(Sessao sessao) {
-        JSONObject resultado = new JSONObject();
-        resultado.put("idPauta", sessao.getIdPauta());
-
         Integer votosSim = votoRepository.findAllVotosBySessaoAndVoto(sessao, "1").size();
         Integer votosNao = votoRepository.findAllVotosBySessaoAndVoto(sessao, "0").size();
 
-        System.out.println("S: " + votosSim);
-        System.out.println("N: " + votosNao);
+        String resultadoVotacao = calcularResultado(votosSim, votosNao);
 
+        resultadoProducer.enviarResultadoVotacao(montarJsonResponse(sessao.getIdPauta(), resultadoVotacao).toString());
+    }
+
+    private String calcularResultado(Integer votosSim, Integer votosNao) {
+        String resultado = "Sem resultado definido";
         if (votosSim > votosNao)
-            resultado.put("resultado", "Sim");
-        else if (votosSim < votosNao)
-            resultado.put("resultado", "Não");
-        else
-            resultado.put("resultado", "Sem resultado definido");
+            resultado = "Sim";
+        else if (votosSim < votosNao) resultado = "Não";
 
+        return resultado;
+    }
 
-        resultadoProducer.enviarResultadoVotacao(resultado.toString());
+    private JSONObject montarJsonResponse(String idPauta, String resultado){
+        JSONObject json = new JSONObject();
+        json.put("idPauta", idPauta);
+        json.put("resultado", resultado);
+        return json;
     }
 
 }

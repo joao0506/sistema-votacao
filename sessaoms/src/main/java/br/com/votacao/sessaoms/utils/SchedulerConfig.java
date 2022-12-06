@@ -24,7 +24,8 @@ public class SchedulerConfig {
         LocalDateTime dataAtual = LocalDateTime.now();
         List<Sessao> sessoes = sessaoService.buscarSessoesEncerradas(dataAtual);
 
-        sessaoService.encerrarSessoes(sessoes);
+        if (sessoes.size() > 0) sessaoService.encerrarSessoes(sessoes);
+        else System.out.println("Não existem sessões para encerrar!");
 
     }
 
