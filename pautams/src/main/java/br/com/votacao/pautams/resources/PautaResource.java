@@ -31,8 +31,8 @@ public class PautaResource {
 
     @PostMapping(value = "/abrir-sessao")
     public ResponseEntity<?> inserirSessaoDaPauta(@RequestParam(value = "pauta") String pauta,
-                                                  @Param(value = "duracaoSessao") Integer duracaoSessao){
-        return pautaService.criarSessao(pauta, duracaoSessao);
+                                                  @RequestParam(value = "duracaoSessao", defaultValue = "1") String duracaoSessao){
+        return pautaService.criarSessao(pauta, Integer.valueOf(duracaoSessao));
     }
 
     @GetMapping
