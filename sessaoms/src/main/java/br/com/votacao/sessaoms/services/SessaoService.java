@@ -6,9 +6,12 @@ import br.com.votacao.sessaoms.exceptions.ValidacoesVotoException;
 import br.com.votacao.sessaoms.kafka.ResultadoProducer;
 import br.com.votacao.sessaoms.repository.SessaoRepository;
 import br.com.votacao.sessaoms.repository.VotoRepository;
+import br.com.votacao.sessaoms.utils.SchedulerConfig;
 import br.com.votacao.sessaoms.utils.UUIDGenerator;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +22,9 @@ import java.util.Optional;
 
 @Service
 public class SessaoService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessaoService.class);
+
+
     @Autowired
     private SessaoRepository sessaoRepository;
 
@@ -44,8 +50,14 @@ public class SessaoService {
     }
 
     public void validarSessao(Sessao sessao) {
-        if (sessao.getIsSessaoEncerrada() || LocalDateTime.now().isAfter(sessao.getDataFechamentoSessao()))
+        LOGGER.info("Verificando se a sessão "+sessao.getId()+" é valida e permite votos...");
+
+        if (sessao.getIsSessaoEncerrada() || LocalDateTime.now().isAfter(sessao.getDataFechamentoSessao())){
+            LOGGER.info("A sessão esta encerrada e não permite mais votos!");
             throw new ValidacoesVotoException("Sessão já encerrada!");
+        }
+
+        LOGGER.info("A sessão está valida");
     }
 
     public List<Sessao> buscarSessoesEncerradas(LocalDateTime dataAtual) {
@@ -61,10 +73,13 @@ public class SessaoService {
     }
 
     private void computarResultado(Sessao sessao) {
+        LOGGER.info("Computando votos da sessão "+sessao.getId()+" aberta em "+sessao.getDataAberturaSessao());
         Integer votosSim = votoRepository.findAllVotosBySessaoAndVoto(sessao, "1").size();
         Integer votosNao = votoRepository.findAllVotosBySessaoAndVoto(sessao, "0").size();
 
         String resultadoVotacao = calcularResultado(votosSim, votosNao);
+
+        LOGGER.info("Resultado final da sessão "+resultadoVotacao);
 
         resultadoProducer.enviarResultadoVotacao(montarJsonResponse(sessao.getIdPauta(), resultadoVotacao).toString());
     }

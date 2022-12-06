@@ -6,11 +6,14 @@ import br.com.votacao.pautams.repositories.PautaRepository;
 import br.com.votacao.pautams.repositories.ResultadoPautaRepository;
 import br.com.votacao.pautams.utils.UUIDGenerator;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ResultadoPautaService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResultadoPautaService.class);
 
     @Autowired
     private ResultadoPautaRepository resultadoPautaRepository;
@@ -31,6 +34,7 @@ public class ResultadoPautaService {
 
     private void atualizarPautaComResultado(Pauta pauta, ResultadoPauta resultadoPauta){
         pauta.setResultado(resultadoPauta);
+        LOGGER.info("Atualizando pauta "+pauta.getId()+" com o resultado "+resultadoPauta.getResultado());
         pautaService.salvarPauta(pauta);
     }
 

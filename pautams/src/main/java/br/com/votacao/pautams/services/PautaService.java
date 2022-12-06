@@ -16,9 +16,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class PautaService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PautaService.class);
 
     @Autowired
     private PautaRepository pautaRepository;
@@ -29,6 +33,7 @@ public class PautaService {
     private RestTemplate restTemplate = new RestTemplate();
 
     public Pauta salvarPauta(Pauta pauta){
+        LOGGER.info("Inserindo pauta "+pauta.getDescricao());
         return pautaRepository.save(pauta);
     }
 
@@ -50,6 +55,7 @@ public class PautaService {
         JSONObject json = criarJsonObjectSessao(pauta, duracaoSessao);
         HttpEntity<String> entity = new HttpEntity<String>(json.toString(), criarHeadersRequisicao());
 
+        LOGGER.info("Criando sessão para pauta "+pauta+" em "+URL_CRIAR_SESSAO);
         ResponseEntity response = restTemplate.postForObject(URL_CRIAR_SESSAO, entity, ResponseEntity.class);
         return response;
     }
