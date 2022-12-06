@@ -2,6 +2,7 @@ package br.com.votacao.sessaoms.resources;
 
 import br.com.votacao.sessaoms.domain.Voto;
 import br.com.votacao.sessaoms.domain.dto.VotacaoDTO;
+import br.com.votacao.sessaoms.exceptions.ValidacoesVotoException;
 import br.com.votacao.sessaoms.services.VotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +20,13 @@ public class VotacaoResource {
 
     @PostMapping
     public ResponseEntity<?> votar(@RequestBody VotacaoDTO votacaoDTO) throws Exception {
-        Voto voto = votoService.computarVoto(votacaoDTO);
+        try {
+            votoService.computarVoto(votacaoDTO);
 
-        return ResponseEntity.ok("Voto computado com sucesso!");
+            return ResponseEntity.ok("Voto computado com sucesso!");
+        } catch (ValidacoesVotoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 }
