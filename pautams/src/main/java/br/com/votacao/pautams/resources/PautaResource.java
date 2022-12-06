@@ -5,7 +5,6 @@ import br.com.votacao.pautams.domain.dto.PautaDTO;
 import br.com.votacao.pautams.services.PautaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -40,6 +39,12 @@ public class PautaResource {
                                                            @RequestParam(value = "linhasPorPagina", defaultValue = "5") String linhasPorPagina){
         Page<Pauta> pautas = pautaService.listarTodasAsPautas(pagina, linhasPorPagina);
         return ResponseEntity.ok(pautas);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Pauta> listarPautaPorId(@PathVariable String id){
+        Pauta pauta = pautaService.listarPautaPorId(id);
+        return ResponseEntity.ok(pauta);
     }
 
 }
