@@ -6,6 +6,7 @@ import br.com.votacao.pautams.mocks.PautaMock;
 import br.com.votacao.pautams.repositories.PautaRepository;
 import br.com.votacao.pautams.services.PautaService;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,21 +14,17 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.ReflectionUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
-
 @RunWith(MockitoJUnitRunner.class)
 public class PautaServiceTest {
 
@@ -43,10 +40,12 @@ public class PautaServiceTest {
     private static Pauta pauta;
 
     private static List<Pauta> pautas;
+    public static final String URL_CRIAR_SESSAO = "http://localhost:8081/sessao-ms/sessao/criar-sessao";
 
     @Before
     public void setUp(){
-        ReflectionTestUtils.setField(pautaService, "URL_CRIAR_SESSAO", "http://localhost:8080/");
+        ReflectionTestUtils.setField(pautaService, "URL_CRIAR_SESSAO", URL_CRIAR_SESSAO);
+
         PautaMock pautaMock = new PautaMock();
         pauta = pautaMock.getPauta();
         pautas = pautaMock.getPautas();
@@ -87,6 +86,25 @@ public class PautaServiceTest {
         Pauta pauta = pautaService.listarPautaPorId("123");
         verify(pautaRepository, times(1)).findById(anyString());
         Assert.assertNotNull(pauta);
+    }
+
+    @Test
+    public void deveCriarSessaoParaPauta() throws JSONException {
+        when(restTemplate.postForObject(URL_CRIAR_SESSAO, getHttpEntityCriarSessao(), String.class)).thenReturn("123");
+
+        pautaService.criarSessao("123", 5);
+    }
+
+    private HttpEntity<String> getHttpEntityCriarSessao() throws JSONException {
+        JSONObject body = new JSONObject();
+        body.put("idPauta", "123");
+        body.put("duracaoSessao", 5);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<String>(body.toString(), headers);
+        return entity;
     }
 
 }
