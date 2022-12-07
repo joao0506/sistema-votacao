@@ -79,7 +79,7 @@ public class SessaoService {
 
         String resultadoVotacao = calcularResultado(votosSim, votosNao);
 
-        LOGGER.info("Resultado final da sessão "+resultadoVotacao);
+        LOGGER.info("Resultado final da sessão: "+resultadoVotacao);
 
         resultadoProducer.enviarResultadoVotacao(montarJsonResponse(sessao.getIdPauta(), resultadoVotacao).toString());
     }
