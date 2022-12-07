@@ -2,6 +2,7 @@ package br.com.votacao.sessaoms.resources;
 
 import br.com.votacao.sessaoms.domain.Sessao;
 import br.com.votacao.sessaoms.domain.dto.SessaoDTO;
+import br.com.votacao.sessaoms.exceptions.ValidacoesVotoException;
 import br.com.votacao.sessaoms.services.SessaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,11 +23,14 @@ public class SessaoResource {
 
     @PostMapping("/criar-sessao")
     public ResponseEntity<?> criarSessao(@RequestBody SessaoDTO sessaoDTO) {
-        Sessao sessao = sessaoService.fromDTO(sessaoDTO);
-        sessaoService.salvarSessao(sessao);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(sessao.getId()).toUri();
-        return ResponseEntity.created(uri).build();
+        try {
+            Sessao sessao = sessaoService.fromDTO(sessaoDTO);
+
+            sessaoService.salvarSessao(sessao);
+            return ResponseEntity.ok(sessao.getId());
+        } catch (ValidacoesVotoException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
 }

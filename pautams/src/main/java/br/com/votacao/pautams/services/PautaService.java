@@ -56,8 +56,8 @@ public class PautaService {
         HttpEntity<String> entity = new HttpEntity<String>(json.toString(), criarHeadersRequisicao());
 
         LOGGER.info("Criando sessão para pauta "+pauta+" em "+URL_CRIAR_SESSAO);
-        ResponseEntity response = restTemplate.postForObject(URL_CRIAR_SESSAO, entity, ResponseEntity.class);
-        return response;
+        String response = restTemplate.postForObject(URL_CRIAR_SESSAO, entity, String.class);
+        return ResponseEntity.ok("Id Sessão: "+response);
     }
 
     private HttpHeaders criarHeadersRequisicao(){

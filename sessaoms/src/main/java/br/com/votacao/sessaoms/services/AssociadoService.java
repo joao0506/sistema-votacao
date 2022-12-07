@@ -25,7 +25,14 @@ public class AssociadoService {
     }
 
     public Associado fromDTO(String cpf){
+        cpf =  removerPontuacaoCpf(cpf);
         return new Associado(UUIDGenerator.generateUUID(), cpf.trim(), new ArrayList<>());
+    }
+
+    public String removerPontuacaoCpf(String cpf) {
+        while (cpf.contains(".")) cpf = cpf.replace(".", "");
+        while (cpf.contains("-")) cpf = cpf.replace("-", "");
+        return cpf;
     }
 
 }

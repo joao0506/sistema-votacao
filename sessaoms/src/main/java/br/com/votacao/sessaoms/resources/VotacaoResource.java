@@ -1,6 +1,5 @@
 package br.com.votacao.sessaoms.resources;
 
-import br.com.votacao.sessaoms.domain.Voto;
 import br.com.votacao.sessaoms.domain.dto.VotacaoDTO;
 import br.com.votacao.sessaoms.exceptions.ValidacoesVotoException;
 import br.com.votacao.sessaoms.services.VotoService;

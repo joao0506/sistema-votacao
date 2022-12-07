@@ -13,4 +13,6 @@ public interface SessaoRepository extends JpaRepository<Sessao, String> {
 
     @Query(value = "SELECT * FROM Sessao s WHERE s.data_fechamento_sessao < ?1 AND s.is_sessao_encerrada IS FALSE", nativeQuery = true)
     List<Sessao> findAllByDataFechamentoSessao(LocalDateTime dataAtual);
+
+    Sessao findByIdPauta(String idPauta);
 }

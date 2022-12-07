@@ -35,7 +35,18 @@ public class SessaoService {
     private ResultadoProducer resultadoProducer;
 
     public Sessao salvarSessao(Sessao sessao) {
+        validarSeAPautaPossuiSessao(sessao.getIdPauta());
         return sessaoRepository.save(sessao);
+    }
+
+    private void validarSeAPautaPossuiSessao(String idPauta){
+        LOGGER.info("Verificando se a pauta possui uma sessão...");
+        Sessao sessao = sessaoRepository.findByIdPauta(idPauta);
+        if (sessao != null){
+            LOGGER.info("A pauta informada já tem uma sessão!");
+            throw new ValidacoesVotoException("A pauta informada já tem uma sessão!");
+        }
+        LOGGER.info("A pauta ainda não possui uma sessão. Criando sessão...");
     }
 
     public Sessao buscarSessaoPorId(String id) {

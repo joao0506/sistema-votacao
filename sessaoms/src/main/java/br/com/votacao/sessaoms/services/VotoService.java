@@ -59,6 +59,7 @@ public class VotoService {
     }
 
     private Associado obterAssociadoDoVoto(String cpfAssociado){
+        cpfAssociado = associadoService.removerPontuacaoCpf(cpfAssociado);
         Associado associado = associadoService.buscarAssociadoPorCPF(cpfAssociado);
         if (associado == null){
             associado = associadoService.fromDTO(cpfAssociado);
